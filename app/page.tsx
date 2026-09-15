@@ -1,69 +1,301 @@
-import Image from "next/image";
+"use client";
 
-export default function Home() {
+import { useEffect, useMemo, useRef, useState } from "react";
+import Navbar from "@/components/layout/Navbar";
+import Footer from "@/components/layout/Footer";
+import CompetitionHero from "@/components/competitions/CompetitionHero";
+import CategoryNav from "@/components/competitions/CategoryNav";
+import CompetitionSearch from "@/components/competitions/CompetitionSearch";
+import CompetitionGrid from "@/components/competitions/CompetitionGrid";
+import CompetitionCTA from "@/components/competitions/CompetitionCTA";
+import type { Competition } from "@/types/competition";
+
+const ITEMS_PER_PAGE = 6;
+
+export default function HomePage() {
+  const [competitions, setCompetitions] = useState<Competition[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  const [search, setSearch] = useState("");
+  const [category, setCategory] = useState("All");
+  const [sortBy, setSortBy] = useState("Recommended");
+
+  const [filters, setFilters] = useState({
+    mode: "All",
+    prize: "All",
+  });
+
+  const [savedIds, setSavedIds] = useState<string[]>([]);
+  const [page, setPage] = useState(1);
+
+  const resultsRef = useRef<HTMLDivElement>(null);
+  const previousPageRef = useRef(1);
+
+  useEffect(() => {
+    async function fetchCompetitions() {
+      try {
+        const response = await fetch("/api/competitions");
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch competitions");
+        }
+
+        const data = await response.json();
+
+        if (!data.success) {
+          throw new Error(
+            data.message || "Failed to fetch competitions"
+          );
+        }
+
+        setCompetitions(data.competitions || []);
+      } catch (err) {
+        setError(
+          err instanceof Error
+            ? err.message
+            : "Failed to fetch competitions"
+        );
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchCompetitions();
+
+    const stored = JSON.parse(
+      localStorage.getItem("savedCompetitions") || "[]"
+    );
+
+    setSavedIds(stored);
+
+    function updateSaved() {
+      const updated = JSON.parse(
+        localStorage.getItem("savedCompetitions") || "[]"
+      );
+
+      setSavedIds(updated);
+    }
+
+    window.addEventListener(
+      "savedCompetitionsUpdated",
+      updateSaved
+    );
+
+    return () => {
+      window.removeEventListener(
+        "savedCompetitionsUpdated",
+        updateSaved
+      );
+    };
+  }, []);
+
+  const filteredCompetitions = useMemo(() => {
+    let result = [...competitions];
+
+    if (category === "Saved") {
+      result = result.filter((competition) =>
+        savedIds.includes(competition.id)
+      );
+    }
+
+    if (search.trim()) {
+      const query = search.toLowerCase();
+
+      result = result.filter(
+        (competition) =>
+          competition.title.toLowerCase().includes(query) ||
+          competition.organizer.toLowerCase().includes(query) ||
+          competition.shortDescription
+            .toLowerCase()
+            .includes(query)
+      );
+    }
+
+    if (category !== "All" && category !== "Saved") {
+      result = result.filter(
+        (competition) =>
+          competition.category === category.toUpperCase()
+      );
+    }
+
+    if (filters.mode !== "All") {
+      result = result.filter(
+        (competition) =>
+          competition.mode === filters.mode.toUpperCase()
+      );
+    }
+
+    if (filters.prize !== "All") {
+      result = result.filter((competition) => {
+        if (filters.prize === "Any Prize") {
+          return competition.prizePool > 0;
+        }
+
+        if (filters.prize === "₹10K+") {
+          return competition.prizePool >= 10000;
+        }
+
+        if (filters.prize === "₹50K+") {
+          return competition.prizePool >= 50000;
+        }
+
+        if (filters.prize === "₹1L+") {
+          return competition.prizePool >= 100000;
+        }
+
+        return true;
+      });
+    }
+
+    if (sortBy === "Prize: High to Low") {
+      result.sort((a, b) => b.prizePool - a.prizePool);
+    }
+
+    if (sortBy === "Deadline: Soonest") {
+      result.sort(
+        (a, b) =>
+          new Date(a.registrationDeadline).getTime() -
+          new Date(b.registrationDeadline).getTime()
+      );
+    }
+
+    return result;
+  }, [
+    competitions,
+    search,
+    category,
+    filters,
+    sortBy,
+    savedIds,
+  ]);
+
+  useEffect(() => {
+    setPage(1);
+  }, [search, category, filters, sortBy]);
+
+  const totalPages = Math.max(
+    1,
+    Math.ceil(filteredCompetitions.length / ITEMS_PER_PAGE)
+  );
+
+  useEffect(() => {
+    if (page > totalPages) {
+      setPage(totalPages);
+    }
+  }, [page, totalPages]);
+
+  const paginatedCompetitions = filteredCompetitions.slice(
+    (page - 1) * ITEMS_PER_PAGE,
+    page * ITEMS_PER_PAGE
+  );
+
+  useEffect(() => {
+    if (previousPageRef.current === page) {
+      return;
+    }
+
+    const results = resultsRef.current;
+
+    if (!results) {
+      return;
+    }
+
+    const navbarOffset = 90;
+    const top =
+      results.getBoundingClientRect().top +
+      window.scrollY -
+      navbarOffset;
+
+    window.scrollTo({
+      top,
+      behavior: "smooth",
+    });
+
+    previousPageRef.current = page;
+  }, [page]);
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
+    <div className="min-h-screen bg-[#f7faff]">
+      <Navbar />
+
+      <main>
+        <CompetitionHero />
+
+        <CategoryNav
+          activeCategory={category}
+          onCategoryChange={setCategory}
         />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+
+        <CompetitionSearch
+          search={search}
+          setSearch={setSearch}
+          filters={filters}
+          setFilters={setFilters}
+          sortBy={sortBy}
+          setSortBy={setSortBy}
+        />
+
+        <div ref={resultsRef}>
+          <CompetitionGrid
+            competitions={paginatedCompetitions}
+            loading={loading}
+            error={error}
+          />
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
+
+        {!loading &&
+          !error &&
+          filteredCompetitions.length > 0 && (
+            <div className="mx-auto flex max-w-[1380px] items-center justify-center gap-2 px-5 pb-12 lg:px-8">
+              <button
+                type="button"
+                disabled={page === 1}
+                onClick={() =>
+                  setPage((current) => Math.max(1, current - 1))
+                }
+                className="rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-[#10295c] transition hover:bg-blue-50 disabled:cursor-not-allowed disabled:opacity-40"
+              >
+                Previous
+              </button>
+
+              {Array.from(
+                { length: totalPages },
+                (_, index) => index + 1
+              ).map((pageNumber) => (
+                <button
+                  key={pageNumber}
+                  type="button"
+                  onClick={() => setPage(pageNumber)}
+                  className={`h-10 w-10 rounded-xl text-sm font-semibold transition ${
+                    page === pageNumber
+                      ? "bg-[#10295c] text-white"
+                      : "border border-slate-200 bg-white text-slate-600 hover:bg-blue-50"
+                  }`}
+                >
+                  {pageNumber}
+                </button>
+              ))}
+
+              <button
+                type="button"
+                disabled={page === totalPages}
+                onClick={() =>
+                  setPage((current) =>
+                    Math.min(totalPages, current + 1)
+                  )
+                }
+                className="rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-[#10295c] transition hover:bg-blue-50 disabled:cursor-not-allowed disabled:opacity-40"
+              >
+                Next
+              </button>
+            </div>
+          )}
+
+        <CompetitionCTA />
       </main>
+
+      <Footer />
     </div>
   );
 }

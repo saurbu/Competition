@@ -1,0 +1,145 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum CompetitionStatus {
+  DRAFT
+  PUBLISHED
+  CLOSED
+  UNPUBLISHED
+}
+
+enum CompetitionMode {
+  ONLINE
+  OFFLINE
+  HYBRID
+}
+
+enum CompetitionCategory {
+  CODING
+  DESIGN
+  BUSINESS
+  INNOVATION
+  ACADEMIC
+  QUIZ
+  HACKATHON
+  DEBATE
+  OTHER
+}
+
+enum RegistrationStatus {
+  REGISTERED
+  CANCELLED
+}
+
+model Competition {
+  id                   String              @id @default(cuid())
+  title                String
+  slug                 String              @unique
+  organizer            String
+  shortDescription     String
+  description          String
+  about                String
+  category             CompetitionCategory
+  mode                 CompetitionMode
+  registrationStart    DateTime
+  registrationDeadline DateTime
+  competitionStart     DateTime
+  competitionEnd       DateTime
+  prizePool            Int
+  status               CompetitionStatus   @default(DRAFT)
+
+  prizes        CompetitionPrize[]
+  eligibility   CompetitionEligibility[]
+  rules         CompetitionRule[]
+  instructions  CompetitionInstruction[]
+  registrations CompetitionRegistration[]
+  bookmarks     CompetitionBookmark[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([category])
+  @@index([mode])
+  @@index([status])
+  @@index([registrationDeadline])
+  @@index([prizePool])
+}
+
+model CompetitionPrize {
+  id            String  @id @default(cuid())
+  competitionId String
+  position      String
+  amount        Int
+  description   String?
+
+  competition Competition @relation(fields: [competitionId], references: [id], onDelete: Cascade)
+
+  @@index([competitionId])
+}
+
+model CompetitionEligibility {
+  id            String @id @default(cuid())
+  competitionId String
+  value         String
+
+  competition Competition @relation(fields: [competitionId], references: [id], onDelete: Cascade)
+
+  @@index([competitionId])
+}
+
+model CompetitionRule {
+  id            String @id @default(cuid())
+  competitionId String
+  value         String
+
+  competition Competition @relation(fields: [competitionId], references: [id], onDelete: Cascade)
+
+  @@index([competitionId])
+}
+
+model CompetitionInstruction {
+  id            String @id @default(cuid())
+  competitionId String
+  value         String
+
+  competition Competition @relation(fields: [competitionId], references: [id], onDelete: Cascade)
+
+  @@index([competitionId])
+}
+
+model CompetitionRegistration {
+  id            String             @id @default(cuid())
+  competitionId String
+  userId        String
+  fullName      String
+  email         String
+  college       String?
+  phone         String?
+  status        RegistrationStatus @default(REGISTERED)
+  registeredAt  DateTime           @default(now())
+
+  competition Competition @relation(fields: [competitionId], references: [id], onDelete: Cascade)
+
+  @@unique([competitionId, userId])
+  @@index([userId])
+  @@index([competitionId])
+}
+
+model CompetitionBookmark {
+  id            String   @id @default(cuid())
+  competitionId String
+  userId        String
+  createdAt     DateTime @default(now())
+
+  competition Competition @relation(fields: [competitionId], references: [id], onDelete: Cascade)
+
+  @@unique([competitionId, userId])
+  @@index([userId])
+  @@index([competitionId])
+}
