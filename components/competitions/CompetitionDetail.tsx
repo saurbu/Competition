@@ -34,7 +34,7 @@ export default function CompetitionDetail({
   return (
     <main className="min-h-screen bg-[#f7faff]">
       <section className="border-b border-slate-200 bg-white">
-        <div className="mx-auto max-w-[1380px] px-5 pb-12 pt-8 lg:px-8 lg:pt-12">
+        <div className="mx-auto max-w-[1380px] px-5 pb-4 pt-8 lg:px-8 lg:pt-5">
           <Link
             href="/"
             className="inline-flex items-center gap-2 text-sm font-medium text-slate-500 transition hover:text-blue-600"

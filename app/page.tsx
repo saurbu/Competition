@@ -1,8 +1,6 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import Navbar from "@/components/layout/Navbar";
-import Footer from "@/components/layout/Footer";
 import CompetitionHero from "@/components/competitions/CompetitionHero";
 import CategoryNav from "@/components/competitions/CategoryNav";
 import CompetitionSearch from "@/components/competitions/CompetitionSearch";
@@ -217,8 +215,6 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-[#f7faff]">
-      <Navbar />
-
       <main>
         <CompetitionHero />
 
@@ -294,8 +290,6 @@ export default function HomePage() {
 
         <CompetitionCTA />
       </main>
-
-      <Footer />
     </div>
   );
 }

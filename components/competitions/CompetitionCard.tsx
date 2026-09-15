@@ -6,7 +6,6 @@ import {
   ArrowUpRight,
   Bookmark,
   CalendarDays,
-  MapPin,
   Trophy,
 } from "lucide-react";
 import type { Competition } from "@/types/competition";
@@ -34,9 +33,21 @@ function formatDate(date: string) {
   return new Date(date).toLocaleDateString("en-IN", {
     day: "numeric",
     month: "short",
-    year: "numeric",
   });
 }
+
+const categoryImages: Record<string, string> = {
+  CODING:
+    "linear-gradient(135deg, #dcecff 0%, #b9d5ff 100%)",
+  DESIGN:
+    "linear-gradient(135deg, #f2e5ff 0%, #d9c4ff 100%)",
+  BUSINESS:
+    "linear-gradient(135deg, #fff0dc 0%, #ffd8ad 100%)",
+  INNOVATION:
+    "linear-gradient(135deg, #dffaf4 0%, #b8eee2 100%)",
+  ACADEMIC:
+    "linear-gradient(135deg, #e9edff 0%, #cbd5ff 100%)",
+};
 
 export default function CompetitionCard({
   competition,
@@ -56,15 +67,11 @@ export default function CompetitionCard({
       localStorage.getItem("savedCompetitions") || "[]"
     );
 
-    let updated: string[];
+    const updated = stored.includes(competition.id)
+      ? stored.filter((id) => id !== competition.id)
+      : [...stored, competition.id];
 
-    if (stored.includes(competition.id)) {
-      updated = stored.filter((id) => id !== competition.id);
-      setSaved(false);
-    } else {
-      updated = [...stored, competition.id];
-      setSaved(true);
-    }
+    setSaved(updated.includes(competition.id));
 
     localStorage.setItem(
       "savedCompetitions",
@@ -78,13 +85,27 @@ export default function CompetitionCard({
     competition.registrationDeadline
   );
 
-  return (
-    <article className="group relative flex h-[390px] w-full flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white p-5 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl sm:h-[400px] sm:p-6">
-      <div className="absolute right-0 top-0 h-28 w-28 rounded-full bg-blue-100/60 blur-3xl" />
+  const category =
+    competition.category?.toUpperCase() || "COMPETITION";
 
-      <div className="relative flex shrink-0 items-start justify-between gap-4">
-        <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-blue-50 text-blue-600">
-          <Trophy size={21} />
+  const imageBackground =
+    categoryImages[category] ||
+    "linear-gradient(135deg, #e8f0ff 0%, #d4def7 100%)";
+
+  return (
+    <article className="group overflow-hidden rounded-[20px] border border-slate-200 bg-white shadow-[0_4px_18px_rgba(37,70,130,0.06)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_15px_35px_rgba(37,70,130,0.12)]">
+      <div
+        className="relative h-[145px] overflow-hidden"
+        style={{ background: imageBackground }}
+      >
+        <div className="absolute -right-8 -top-10 h-32 w-32 rounded-full bg-white/30 blur-2xl" />
+
+        <div className="absolute -bottom-10 -left-8 h-28 w-28 rounded-full bg-white/35 blur-2xl" />
+
+        <div className="relative flex h-full items-center justify-center">
+          <div className="flex h-16 w-16 rotate-[-5deg] items-center justify-center rounded-[18px] border border-white/70 bg-white/50 text-[#10295c] shadow-sm backdrop-blur-sm transition duration-300 group-hover:rotate-0 group-hover:scale-105">
+            <Trophy size={30} strokeWidth={1.5} />
+          </div>
         </div>
 
         <button
@@ -95,88 +116,79 @@ export default function CompetitionCard({
               ? "Remove from saved competitions"
               : "Save competition"
           }
-          className={`flex h-9 w-9 items-center justify-center rounded-xl border transition ${
+          className={`absolute right-3 top-3 flex h-9 w-9 items-center justify-center rounded-full border backdrop-blur-md transition ${
             saved
-              ? "border-blue-200 bg-blue-50 text-blue-600"
-              : "border-slate-200 text-slate-400 hover:border-blue-200 hover:text-blue-600"
+              ? "border-blue-200 bg-white text-blue-600"
+              : "border-white/70 bg-white/75 text-slate-500 hover:text-blue-600"
           }`}
         >
           <Bookmark
-            size={17}
+            size={16}
             fill={saved ? "currentColor" : "none"}
           />
         </button>
       </div>
 
-      <div className="relative mt-4 min-h-0 flex-1">
-        <div className="mb-2 flex items-center gap-2 overflow-hidden">
-          <span className="shrink-0 rounded-full bg-blue-50 px-2.5 py-1 text-[11px] font-semibold text-blue-600">
+      <div className="p-4">
+        <div className="flex items-center gap-2">
+          <span className="rounded-full bg-blue-50 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-blue-600">
             {competition.category}
           </span>
 
-          <span className="shrink-0 rounded-full bg-slate-100 px-2.5 py-1 text-[11px] font-medium text-slate-600">
+          <span className="rounded-full bg-slate-50 px-2.5 py-1 text-[10px] font-medium text-slate-500">
             {competition.mode}
           </span>
         </div>
 
-        <h3 className="line-clamp-2 text-lg font-bold leading-tight text-[#10295c]">
+        <h3 className="mt-3 line-clamp-2 text-[17px] font-bold leading-[1.25] text-[#10295c]">
           {competition.title}
         </h3>
 
-        <p className="mt-1.5 truncate text-xs font-medium text-slate-500">
+        <p className="mt-1 truncate text-xs font-medium text-slate-400">
           {competition.organizer}
         </p>
 
-        <p className="mt-3 line-clamp-2 text-sm leading-5 text-slate-600">
+        <p className="mt-3 line-clamp-2 min-h-[36px] text-xs leading-[18px] text-slate-500">
           {competition.shortDescription}
         </p>
-      </div>
 
-      <div className="relative grid shrink-0 grid-cols-2 gap-2.5">
-        <div className="rounded-xl bg-slate-50 p-3">
-          <p className="text-[11px] font-medium text-slate-500">
-            Prize Pool
-          </p>
+        <div className="mt-4 flex items-center justify-between border-t border-slate-100 pt-3">
+          <div>
+            <p className="text-[10px] font-medium uppercase tracking-wide text-slate-400">
+              Prize Pool
+            </p>
 
-          <p className="mt-1 truncate text-sm font-bold text-[#10295c]">
-            {formatPrize(competition.prizePool)}
-          </p>
+            <p className="mt-0.5 text-sm font-bold text-[#10295c]">
+              {formatPrize(competition.prizePool)}
+            </p>
+          </div>
+
+          <div className="text-right">
+            <p className="text-[10px] font-medium uppercase tracking-wide text-slate-400">
+              Deadline
+            </p>
+
+            <div className="mt-0.5 flex items-center justify-end gap-1 text-sm font-semibold text-[#10295c]">
+              <CalendarDays size={13} />
+              {formatDate(competition.registrationDeadline)}
+            </div>
+          </div>
         </div>
 
-        <div className="rounded-xl bg-slate-50 p-3">
-          <p className="text-[11px] font-medium text-slate-500">
-            Deadline
-          </p>
-
-          <p className="mt-1 text-sm font-bold text-[#10295c]">
-            {daysLeft} days
-          </p>
-        </div>
-      </div>
-
-      <div className="relative mt-3 flex shrink-0 items-center justify-between border-t border-slate-100 pt-3">
-        <div className="flex min-w-0 items-center gap-1.5 text-[11px] text-slate-500">
-          <CalendarDays size={13} />
-          <span className="truncate">
-            {formatDate(competition.registrationDeadline)}
+        <div className="mt-4 flex items-center justify-between">
+          <span className="text-[11px] font-medium text-slate-400">
+            {daysLeft} days left
           </span>
-        </div>
 
-        <div className="ml-2 flex shrink-0 items-center gap-1 text-[11px] font-medium text-slate-500">
-          <MapPin size={13} />
-          {competition.mode === "ONLINE"
-            ? "Online"
-            : competition.mode}
+          <Link
+            href={`/competitions/${competition.slug}`}
+            className="inline-flex items-center gap-1.5 rounded-full bg-[#10295c] px-4 py-2 text-[11px] font-semibold text-white transition hover:bg-blue-700"
+          >
+            View
+            <ArrowUpRight size={13} />
+          </Link>
         </div>
       </div>
-
-      <Link
-        href={`/competitions/${competition.slug}`}
-        className="relative mt-3 flex h-11 shrink-0 w-full items-center justify-center gap-2 rounded-xl bg-[#10295c] px-4 text-sm font-semibold text-white transition hover:bg-blue-700"
-      >
-        View Competition
-        <ArrowUpRight size={16} />
-      </Link>
     </article>
   );
 }

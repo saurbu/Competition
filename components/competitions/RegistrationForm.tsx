@@ -72,7 +72,7 @@ export default function RegistrationForm({
 
   if (success) {
     return (
-      <main className="min-h-screen bg-[#f7faff] px-5 py-24">
+      <main className="min-h-screen bg-[#f7faff] px-5 py-5">
         <div className="mx-auto flex min-h-[70vh] max-w-xl items-center justify-center">
           <div className="w-full rounded-3xl border border-slate-200 bg-white p-8 text-center shadow-sm sm:p-10">
             <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-blue-50 text-2xl text-blue-600">
@@ -149,7 +149,7 @@ export default function RegistrationForm({
   }
 
   return (
-    <main className="min-h-screen bg-[#f7faff] px-4 py-24">
+    <main className="min-h-screen bg-[#f7faff] px-4 py-5">
       <div className="mx-auto max-w-2xl">
         <Link
           href={`/competitions/${competition.slug}`}

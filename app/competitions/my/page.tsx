@@ -26,7 +26,7 @@ export default function MyCompetitionsPage() {
   return (
     <main className="min-h-screen bg-[#f7faff]">
       <section className="border-b border-slate-200 bg-white">
-        <div className="mx-auto max-w-[1380px] px-5 pb-12 pt-28 lg:px-8 lg:pt-32">
+        <div className="mx-auto max-w-[1380px] px-5 pb-12 pt-8 lg:px-8 lg:pt-8">
           <Link
             href="/"
             className="text-sm font-medium text-slate-500 transition hover:text-blue-600"

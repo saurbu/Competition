@@ -32,14 +32,14 @@ export default function CompetitionSearch({
   return (
     <section
       id="competitions"
-      className="bg-[#f7faff] px-4 py-5 sm:px-5 sm:py-7 lg:px-8"
+      className="bg-white px-4 py-5 sm:px-5 lg:px-8"
     >
       <div className="mx-auto max-w-[1380px]">
-        <div className="flex flex-col gap-3 lg:flex-row lg:items-center">
-          <div className="relative flex-1">
+        <div className="flex flex-col gap-3 rounded-2xl border border-slate-200 bg-[#f9fbff] p-3 sm:p-4 lg:flex-row lg:items-center">
+          <div className="relative min-w-0 flex-1">
             <Search
-              size={18}
-              className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
+              size={17}
+              className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
             />
 
             <input
@@ -47,15 +47,15 @@ export default function CompetitionSearch({
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search competitions..."
-              className="h-11 w-full rounded-xl border border-slate-200 bg-white pl-11 pr-4 text-sm text-[#10295c] outline-none transition placeholder:text-slate-400 focus:border-blue-400 focus:ring-2 focus:ring-blue-50"
+              className="h-11 w-full rounded-xl border border-slate-200 bg-white pl-11 pr-4 text-sm text-[#10295c] outline-none transition placeholder:text-slate-400 focus:border-blue-300 focus:ring-2 focus:ring-blue-50"
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-2 lg:flex">
+          <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:flex">
             <div className="relative">
               <SlidersHorizontal
-                size={15}
-                className="pointer-events-none absolute left-3 top-1/2 z-10 -translate-y-1/2 text-slate-500"
+                size={14}
+                className="pointer-events-none absolute left-3 top-1/2 z-10 -translate-y-1/2 text-slate-400"
               />
 
               <select
@@ -66,7 +66,7 @@ export default function CompetitionSearch({
                     mode: e.target.value,
                   }))
                 }
-                className="h-11 w-full appearance-none rounded-xl border border-slate-200 bg-white pl-9 pr-8 text-xs font-medium text-[#10295c] outline-none focus:border-blue-400 sm:text-sm lg:w-[145px]"
+                className="h-11 w-full appearance-none rounded-xl border border-slate-200 bg-white pl-9 pr-8 text-xs font-medium text-[#10295c] outline-none transition focus:border-blue-300 sm:text-sm lg:w-[140px]"
               >
                 <option value="All">All Modes</option>
                 <option value="Online">Online</option>
@@ -75,7 +75,7 @@ export default function CompetitionSearch({
               </select>
 
               <ChevronDown
-                size={14}
+                size={13}
                 className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-slate-400"
               />
             </div>
@@ -89,7 +89,7 @@ export default function CompetitionSearch({
                     prize: e.target.value,
                   }))
                 }
-                className="h-11 w-full appearance-none rounded-xl border border-slate-200 bg-white px-3 pr-8 text-xs font-medium text-[#10295c] outline-none focus:border-blue-400 sm:text-sm lg:w-[145px]"
+                className="h-11 w-full appearance-none rounded-xl border border-slate-200 bg-white px-3 pr-8 text-xs font-medium text-[#10295c] outline-none transition focus:border-blue-300 sm:text-sm lg:w-[140px]"
               >
                 <option value="All">All Prizes</option>
                 <option value="Any Prize">Any Prize</option>
@@ -99,31 +99,31 @@ export default function CompetitionSearch({
               </select>
 
               <ChevronDown
-                size={14}
+                size={13}
                 className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-slate-400"
               />
             </div>
-          </div>
 
-          <div className="relative">
-            <select
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value)}
-              className="h-10 w-full appearance-none rounded-xl border border-slate-200 bg-white px-3 pr-8 text-xs font-medium text-[#10295c] outline-none focus:border-blue-400 lg:w-[165px]"
-            >
-              <option value="Recommended">Recommended</option>
-              <option value="Prize: High to Low">
-                Prize: High to Low
-              </option>
-              <option value="Deadline: Soonest">
-                Deadline: Soonest
-              </option>
-            </select>
+            <div className="relative col-span-2 sm:col-span-1">
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value)}
+                className="h-11 w-full appearance-none rounded-xl border border-slate-200 bg-white px-3 pr-8 text-xs font-medium text-[#10295c] outline-none transition focus:border-blue-300 sm:text-sm lg:w-[155px]"
+              >
+                <option value="Recommended">Recommended</option>
+                <option value="Prize: High to Low">
+                  Prize: High to Low
+                </option>
+                <option value="Deadline: Soonest">
+                  Deadline: Soonest
+                </option>
+              </select>
 
-            <ChevronDown
-              size={14}
-              className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-slate-400"
-            />
+              <ChevronDown
+                size={13}
+                className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-slate-400"
+              />
+            </div>
           </div>
         </div>
       </div>
