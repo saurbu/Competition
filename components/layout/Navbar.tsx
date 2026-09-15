@@ -87,7 +87,7 @@ export default function Navbar() {
 
                   {openDropdown === item.label && (
                     <div className="absolute left-0 top-9 z-[1000] w-52 rounded-2xl border border-slate-200 bg-white p-2 shadow-xl">
-                      {item.items.map((subItem) => (
+                      {(item.items ?? []).map((subItem) => (
                         <a
                           key={subItem.label}
                           href={subItem.href}
@@ -177,7 +177,7 @@ export default function Navbar() {
 
                     {openDropdown === item.label && (
                       <div className="mb-3 rounded-xl bg-slate-50 p-2">
-                        {item.items.map((subItem) => (
+                        {(item.items ?? []).map((subItem) => (
                           <a
                             key={subItem.label}
                             href={subItem.href}

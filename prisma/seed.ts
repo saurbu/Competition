@@ -1,6 +1,11 @@
 import "dotenv/config";
 import { PrismaPg } from "@prisma/adapter-pg";
-import { PrismaClient } from "../generated/prisma/client";
+import {
+  PrismaClient,
+  CompetitionCategory,
+  CompetitionMode,
+  CompetitionStatus,
+} from "../generated/prisma/client";
 
 const adapter = new PrismaPg({
   connectionString: process.env.DATABASE_URL!,
@@ -21,14 +26,14 @@ const competitions = [
       "CodeSprint India 2026 is a coding competition designed for students and developers to solve real-world technical challenges.",
     about:
       "Participants will work on programming challenges covering algorithms, problem solving, web development, and emerging technologies.",
-    category: "CODING",
-    mode: "ONLINE",
+    category: CompetitionCategory.CODING,
+    mode: CompetitionMode.ONLINE,
     registrationStart: new Date("2026-09-01"),
     registrationDeadline: new Date("2026-10-05"),
     competitionStart: new Date("2026-10-10"),
     competitionEnd: new Date("2026-10-11"),
     prizePool: 100000,
-    status: "PUBLISHED",
+    status: CompetitionStatus.PUBLISHED,
     prizes: [
       { position: "1st", amount: 50000, description: "Winner prize" },
       { position: "2nd", amount: 30000, description: "Runner-up prize" },
@@ -64,14 +69,14 @@ const competitions = [
       "DesignSphere Challenge 2026 invites students to create thoughtful and impactful digital experiences.",
     about:
       "Participants will explore user experience, interface design, visual communication, and product thinking.",
-    category: "DESIGN",
-    mode: "ONLINE",
+    category: CompetitionCategory.DESIGN,
+    mode: CompetitionMode.ONLINE,
     registrationStart: new Date("2026-09-05"),
     registrationDeadline: new Date("2026-10-12"),
     competitionStart: new Date("2026-10-15"),
     competitionEnd: new Date("2026-10-20"),
     prizePool: 75000,
-    status: "PUBLISHED",
+    status: CompetitionStatus.PUBLISHED,
     prizes: [
       { position: "1st", amount: 40000, description: "Winner prize" },
       { position: "2nd", amount: 20000, description: "Runner-up prize" },
@@ -107,14 +112,14 @@ const competitions = [
       "BizSpark Case Competition challenges participants to analyze business scenarios and propose practical solutions.",
     about:
       "The competition focuses on strategy, market analysis, business innovation, and presentation skills.",
-    category: "BUSINESS",
-    mode: "HYBRID",
+    category: CompetitionCategory.BUSINESS,
+    mode: CompetitionMode.HYBRID,
     registrationStart: new Date("2026-09-10"),
     registrationDeadline: new Date("2026-10-18"),
     competitionStart: new Date("2026-10-22"),
     competitionEnd: new Date("2026-10-25"),
     prizePool: 50000,
-    status: "PUBLISHED",
+    status: CompetitionStatus.PUBLISHED,
     prizes: [
       { position: "1st", amount: 25000, description: "Winner prize" },
       { position: "2nd", amount: 15000, description: "Runner-up prize" },
@@ -150,14 +155,14 @@ const competitions = [
       "A national competition focused on practical artificial intelligence solutions.",
     about:
       "Participants can showcase their AI skills by solving real-world challenges.",
-    category: "INNOVATION",
-    mode: "ONLINE",
+    category: CompetitionCategory.INNOVATION,
+    mode: CompetitionMode.ONLINE,
     registrationStart: new Date("2026-08-01"),
     registrationDeadline: new Date("2026-10-20"),
     competitionStart: new Date("2026-10-22"),
     competitionEnd: new Date("2026-11-05"),
     prizePool: 125000,
-    status: "PUBLISHED",
+    status: CompetitionStatus.PUBLISHED,
     prizes: [
       {
         position: "1st",
@@ -198,14 +203,14 @@ const competitions = [
       "A design competition for students interested in UI, UX and visual design.",
     about:
       "Participants will create practical design solutions while demonstrating their design thinking skills.",
-    category: "DESIGN",
-    mode: "ONLINE",
+    category: CompetitionCategory.DESIGN,
+    mode: CompetitionMode.ONLINE,
     registrationStart: new Date("2026-08-05"),
     registrationDeadline: new Date("2026-10-24"),
     competitionStart: new Date("2026-10-26"),
     competitionEnd: new Date("2026-11-08"),
     prizePool: 90000,
-    status: "PUBLISHED",
+    status: CompetitionStatus.PUBLISHED,
     prizes: [
       {
         position: "1st",
@@ -246,14 +251,14 @@ const competitions = [
       "A coding competition designed to challenge participants with practical programming problems.",
     about:
       "Participants compete through multiple programming challenges and demonstrate their problem-solving abilities.",
-    category: "CODING",
-    mode: "ONLINE",
+    category: CompetitionCategory.CODING,
+    mode: CompetitionMode.ONLINE,
     registrationStart: new Date("2026-08-10"),
     registrationDeadline: new Date("2026-10-27"),
     competitionStart: new Date("2026-10-29"),
     competitionEnd: new Date("2026-11-02"),
     prizePool: 150000,
-    status: "PUBLISHED",
+    status: CompetitionStatus.PUBLISHED,
     prizes: [
       {
         position: "1st",
@@ -294,14 +299,14 @@ const competitions = [
       "A business competition focused on strategic thinking and practical business decisions.",
     about:
       "Participants analyze business situations and present solutions to real-world problems.",
-    category: "BUSINESS",
-    mode: "HYBRID",
+    category: CompetitionCategory.BUSINESS,
+    mode: CompetitionMode.HYBRID,
     registrationStart: new Date("2026-08-15"),
     registrationDeadline: new Date("2026-10-30"),
     competitionStart: new Date("2026-11-02"),
     competitionEnd: new Date("2026-11-12"),
     prizePool: 110000,
-    status: "PUBLISHED",
+    status: CompetitionStatus.PUBLISHED,
     prizes: [
       {
         position: "1st",
@@ -342,14 +347,14 @@ const competitions = [
       "An academic competition covering analytical and subject-based problem solving.",
     about:
       "Students can demonstrate their academic knowledge through a series of competitive challenges.",
-    category: "ACADEMIC",
-    mode: "ONLINE",
+    category: CompetitionCategory.ACADEMIC,
+    mode: CompetitionMode.ONLINE,
     registrationStart: new Date("2026-08-20"),
     registrationDeadline: new Date("2026-11-02"),
     competitionStart: new Date("2026-11-05"),
     competitionEnd: new Date("2026-11-06"),
     prizePool: 60000,
-    status: "PUBLISHED",
+    status: CompetitionStatus.PUBLISHED,
     prizes: [
       {
         position: "1st",
@@ -390,14 +395,14 @@ const competitions = [
       "A startup-focused competition for students and young innovators.",
     about:
       "Participants present startup ideas and demonstrate their understanding of customers, markets and business models.",
-    category: "INNOVATION",
-    mode: "HYBRID",
+    category: CompetitionCategory.INNOVATION,
+    mode: CompetitionMode.HYBRID,
     registrationStart: new Date("2026-08-25"),
     registrationDeadline: new Date("2026-11-08"),
     competitionStart: new Date("2026-11-10"),
     competitionEnd: new Date("2026-11-20"),
     prizePool: 200000,
-    status: "PUBLISHED",
+    status: CompetitionStatus.PUBLISHED,
     prizes: [
       {
         position: "1st",

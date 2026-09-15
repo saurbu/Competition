@@ -44,11 +44,34 @@ export async function POST(
       );
     }
 
+    const userId = `guest-${email}`;
+
+    const existingRegistration =
+      await prisma.competitionRegistration.findUnique({
+        where: {
+          competitionId_userId: {
+            competitionId: id,
+            userId,
+          },
+        },
+      });
+
+    if (existingRegistration) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "You are already registered for this competition.",
+        },
+        { status: 409 }
+      );
+    }
+
     const registration =
       await prisma.competitionRegistration.create({
         data: {
           competitionId: id,
-          name,
+          userId,
+          fullName: name,
           email,
           phone,
           college,
