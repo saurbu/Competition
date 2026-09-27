@@ -10,7 +10,7 @@ const navItems = [
     items: [
       { label: "Internships", href: "#" },
       { label: "Jobs for Freshers", href: "#" },
-      { label: "Competitions", href: "/competitions" },
+      { label: "Competitions", href: "#competition" },
       { label: "Hackathons", href: "#" },
     ],
   },

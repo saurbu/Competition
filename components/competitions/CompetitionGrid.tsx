@@ -16,7 +16,9 @@ export default function CompetitionGrid({
 }: CompetitionGridProps) {
   if (loading) {
     return (
-      <section className="mx-auto max-w-[1380px] px-5 py-10 lg:px-8">
+      <section className="mx-auto max-w-[1380px] px-5 py-10 lg:px-8"
+      id="competition"
+      >
         <div className="mb-7">
           <div className="h-3 w-20 animate-pulse rounded-full bg-slate-200" />
           <div className="mt-3 h-8 w-64 animate-pulse rounded-lg bg-slate-200" />

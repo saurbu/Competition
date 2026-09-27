@@ -1,5 +1,43 @@
 @import "tailwindcss";
 
+:root {
+  --color-primary: #0B1E4A;
+  --color-deep-navy: #091838;
+
+  --color-background: #EFF1F9;
+  --color-white: #FFFFFF;
+  --color-pink-soft: #FFE2EB;
+
+  --color-blue: #2E58D7;
+  --color-blue-hover: #1C3FA8;
+
+  --color-cyan: #00CBE8;
+  --color-cyan-light: #7AD9E8;
+
+  --color-editorial-red: #9A2A2A;
+  --color-pink: #C1205B;
+
+  --color-text-primary: #0B1E4A;
+  --color-text-secondary: #5B6487;
+  --color-text-muted: #7C849E;
+  --color-text-white: #FFFFFF;
+
+  --color-border: #DDE2F0;
+  --color-border-light: #E8EBF4;
+
+  --color-blue-surface: #E7EDFF;
+  --color-cyan-surface: #E8F9FC;
+
+  --radius-sm: 10px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+  --radius-pill: 999px;
+
+  --shadow-card: 0 4px 18px rgba(11, 30, 74, 0.06);
+  --shadow-hover: 0 8px 28px rgba(11, 30, 74, 0.10);
+}
+
 * {
   box-sizing: border-box;
 }
@@ -11,9 +49,9 @@ html {
 body {
   margin: 0;
   min-width: 320px;
-  background: #f7faff;
-  color: #10295c;
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-background);
+  color: var(--color-text-primary);
+  font-family: "DM Sans", "Inter", system-ui, sans-serif;
 }
 
 button,
